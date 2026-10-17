@@ -1,0 +1,34 @@
+{
+ "_comment": "Identidade do relatorio. Para usar com outra marca, troque estes valores (cores em hex sem #).",
+ "agency": "Carratu Digital",
+ "author": "Ubirajara Carratu",
+ "methodology_name": "Metodologia Carratu de Visibilidade em Busca (SEO · GEO · AEO)",
+ "website": "carratu.com.br",
+ "footer_credit": "Skill e metodologia por Ubirajara Carratu · Carratu Digital",
+ "colors": {
+  "primary": "F43404",
+  "dark": "0A0A0B",
+  "text": "1F2328",
+  "muted": "6B7280",
+  "light_bg": "F7F7F7",
+  "border": "E5E7EB",
+  "pass": "15803D",
+  "warn": "B45309",
+  "fail": "B91C1C",
+  "na": "9CA3AF",
+  "critical": "B91C1C",
+  "high": "F43404",
+  "medium": "B45309",
+  "quickwin": "15803D"
+ },
+ "font": "Arial",
+ "cta_title": "Próximo passo: transformar o diagnóstico em plano",
+ "cta_text": "Em uma conversa de 30 minutos, a Carratu Digital mostra como corrigir os bloqueios, priorizar o conteúdo que gera receita e medir a presença da sua marca no ChatGPT, no Google e nas demais IAs.",
+ "cta_url": "carratu.com.br",
+ "onepager_brand": "brand-consultoria.json",
+ "producer_footer": {
+  "text": "Este skill foi produzido pela Carratu Digital",
+  "logo": "logos/carratu-digital-vermelha.png",
+  "max_width_px": 70
+ }
+}

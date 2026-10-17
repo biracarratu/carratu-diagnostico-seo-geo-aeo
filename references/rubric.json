@@ -1,0 +1,553 @@
+{
+ "version": "1.1.0",
+ "scale": "Cada check recebe status pass (1), warn (0.5), fail (0), na (fora do cálculo) ou unknown (não avaliado, reduz a confiança). Nota da dimensão = 100 * soma(peso*status) / soma(peso dos avaliados). Confiança = peso avaliado / peso total da dimensão.",
+ "evidence_levels": {
+  "S": "forte: teste controlado ou documentação oficial",
+  "C": "correlacional: grande base observacional",
+  "A": "anedotico: prática de mercado, amostra pequena",
+  "M": "mito ou contestado: não pontua"
+ },
+ "types": {
+  "auto": "calculado por scripts/analyze.py a partir do HTML",
+  "manual": "julgamento do Claude lendo as páginas (pages/*.txt)",
+  "data": "exige ferramenta externa (Semrush, PageSpeed, busca na web, testes de prompt)"
+ },
+ "dimensions": {
+  "SEO": "Fundação técnica e on-page para ser rastreado, indexado e ranquear",
+  "GEO": "Prontidão para ser recuperado e citado por motores generativos (ChatGPT, Perplexity, Gemini, Claude, AI Overviews/AI Mode)",
+  "AEO": "Respostas extraíveis para snippets, People Also Ask, AI Overviews e voz",
+  "VIS": "Visibilidade medida de verdade (rankings, AI Overviews, citações em IA). So existe com dados externos"
+ },
+ "checks": [
+  {
+   "id": "seo.indexable",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 5,
+   "evidence": "S",
+   "name": "Paginas-chave indexáveis",
+   "fix": "Remover noindex (meta robots ou X-Robots-Tag) das páginas que devem aparecer na busca."
+  },
+  {
+   "id": "seo.googlebot_allowed",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 5,
+   "evidence": "S",
+   "name": "Googlebot e Bingbot liberados no robots.txt",
+   "fix": "Ajustar regras Disallow que bloqueiam a home ou o blog para Googlebot/Bingbot."
+  },
+  {
+   "id": "seo.https",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 3,
+   "evidence": "S",
+   "name": "HTTPS com redirecionamento de HTTP",
+   "fix": "Forcar redirect 301 de http:// para https:// e ativar HSTS."
+  },
+  {
+   "id": "seo.host_consolidated",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Versão www/sem www consolidada",
+   "fix": "Redirecionar 301 a variante secundaria para a principal."
+  },
+  {
+   "id": "seo.soft404",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Páginas inexistentes retornam 404",
+   "fix": "Configurar o servidor/CMS para devolver status 404 (não 200) em URLs inexistentes."
+  },
+  {
+   "id": "seo.sitemap",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Sitemap XML valido, citado no robots.txt e com lastmod",
+   "fix": "Publicar sitemap.xml com lastmod real e declarar no robots.txt (linha Sitemap:)."
+  },
+  {
+   "id": "seo.broken_links",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 3,
+   "evidence": "S",
+   "name": "Links internos sem erro (4xx/5xx)",
+   "fix": "Corrigir ou redirecionar (301) os links internos quebrados e atualizar menus e textos que apontam para eles."
+  },
+  {
+   "id": "seo.redirects",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Links internos apontam direto para a URL final (sem redirecionamentos ou cadeias)",
+   "fix": "Atualizar links internos para a URL final, eliminar cadeias de 2 ou mais redirecionamentos e trocar links http:// por https://."
+  },
+  {
+   "id": "seo.sitemap_health",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "URLs do sitemap respondem 200, sem redirecionamento nem noindex",
+   "fix": "Manter no sitemap apenas URLs canônicas, indexáveis e com status 200."
+  },
+  {
+   "id": "seo.bing_webmaster",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "data",
+   "weight": 1,
+   "evidence": "S",
+   "name": "Site verificado no Bing Webmaster Tools (base do Copilot)",
+   "fix": "Verificar o site no Bing Webmaster Tools, enviar o sitemap e ativar IndexNow no CMS."
+  },
+  {
+   "id": "seo.server_rendered",
+   "dim": "SEO",
+   "pillar": "Rastreio e indexação",
+   "type": "auto",
+   "weight": 4,
+   "evidence": "S",
+   "name": "Conteúdo principal presente no HTML do servidor (sem depender de JavaScript)",
+   "fix": "Usar SSR/SSG ou pre-render nas páginas de conteúdo. Crawlers de IA não executam JavaScript."
+  },
+  {
+   "id": "seo.title",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 3,
+   "evidence": "S",
+   "name": "Titles presentes, únicos e com tamanho adequado",
+   "fix": "Um title único por página, ~30-60 caracteres, com o tema principal no início."
+  },
+  {
+   "id": "seo.meta_description",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Meta descriptions presentes e únicas",
+   "fix": "Escrever descrições únicas de ~120-160 caracteres que resumam a resposta e a proposta."
+  },
+  {
+   "id": "seo.h1",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "C",
+   "name": "Um H1 claro por página",
+   "fix": "Garantir exatamente um H1 descritivo por página."
+  },
+  {
+   "id": "seo.heading_hierarchy",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 1,
+   "evidence": "A",
+   "name": "Hierarquia de headings sem saltos",
+   "fix": "Organizar H2/H3 em ordem lógica, sem pular níveis."
+  },
+  {
+   "id": "seo.canonical",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Canonical presente e coerente",
+   "fix": "Adicionar canonical autorreferente absoluto e apontando para a URL final (200)."
+  },
+  {
+   "id": "seo.lang_mobile",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 1,
+   "evidence": "S",
+   "name": "Atributo lang e meta viewport",
+   "fix": "Definir <html lang> correto e meta viewport responsivo."
+  },
+  {
+   "id": "seo.hreflang",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 1,
+   "evidence": "S",
+   "name": "hreflang válido em sites multilíngues (códigos, autorreferência, x-default, destinos 200)",
+   "fix": "Usar códigos ISO (pt-BR, en, es), incluir autorreferência e x-default, garantir reciprocidade e destinos com status 200."
+  },
+  {
+   "id": "seo.image_alt",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 1,
+   "evidence": "S",
+   "name": "Imagens com texto alternativo",
+   "fix": "Descrever imagens informativas com alt objetivo; decorativas com alt vazio."
+  },
+  {
+   "id": "seo.internal_links",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "C",
+   "name": "Linkagem interna suficiente e descritiva",
+   "fix": "Ligar páginas de produto, cases e artigos entre si com anchors descritivos."
+  },
+  {
+   "id": "seo.social_meta",
+   "dim": "SEO",
+   "pillar": "On-page",
+   "type": "auto",
+   "weight": 1,
+   "evidence": "A",
+   "name": "Open Graph e Twitter Card",
+   "fix": "Adicionar og:title, og:description, og:image e twitter:card."
+  },
+  {
+   "id": "seo.content_depth",
+   "dim": "SEO",
+   "pillar": "Conteúdo",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "C",
+   "name": "Profundidade de conteúdo compatível com o tipo de página",
+   "fix": "Expandir páginas rasas (serviços, produto, artigos) com exemplos, dados e respostas as duvidas reais."
+  },
+  {
+   "id": "seo.search_intent",
+   "dim": "SEO",
+   "pillar": "Conteúdo",
+   "type": "manual",
+   "weight": 3,
+   "evidence": "S",
+   "name": "Páginas atendem a intenção de busca do publico-alvo",
+   "fix": "Alinhar cada página a uma intenção (informacional, comparativa, transacional) e ao ICP."
+  },
+  {
+   "id": "seo.structured_data",
+   "dim": "SEO",
+   "pillar": "Conteúdo",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Dados estruturados validos e adequados ao tipo de página",
+   "fix": "Corrigir JSON-LD com erro e usar tipos suportados: Organization, WebSite, Article/BlogPosting, Product/SoftwareApplication, BreadcrumbList."
+  },
+  {
+   "id": "seo.core_web_vitals",
+   "dim": "SEO",
+   "pillar": "Performance",
+   "type": "data",
+   "weight": 3,
+   "evidence": "S",
+   "name": "Core Web Vitals (LCP, INP, CLS) no verde",
+   "fix": "Otimizar LCP (<2,5s), INP (<200ms) e CLS (<0,1) com base no relatório do PageSpeed/CrUX."
+  },
+  {
+   "id": "seo.organic_footprint",
+   "dim": "SEO",
+   "pillar": "Performance",
+   "type": "data",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Pegada organica (palavras-chave, tráfego e tendência)",
+   "fix": "Atacar palavras-chave de alto valor do ICP em que concorrentes ranqueiam e o site não."
+  },
+  {
+   "id": "geo.ai_search_bots",
+   "dim": "GEO",
+   "pillar": "Acesso de IA",
+   "type": "auto",
+   "weight": 5,
+   "evidence": "S",
+   "name": "Bots de busca de IA liberados (OAI-SearchBot, Claude-SearchBot, PerplexityBot, Bingbot, Applebot, Googlebot)",
+   "fix": "Liberar no robots.txt os bots de busca/recuperação. Bloquear bots de treino é uma decisão de negócio separada."
+  },
+  {
+   "id": "geo.waf_blocking",
+   "dim": "GEO",
+   "pillar": "Acesso de IA",
+   "type": "auto",
+   "weight": 4,
+   "evidence": "S",
+   "name": "Firewall/CDN não bloqueia crawlers de IA",
+   "fix": "Revisar regras de bot do Cloudflare/WAF (AI Crawl Control, Bot Fight Mode) para permitir bots de busca de IA."
+  },
+  {
+   "id": "geo.training_policy",
+   "dim": "GEO",
+   "pillar": "Acesso de IA",
+   "type": "auto",
+   "weight": 0,
+   "evidence": "A",
+   "name": "Politica para bots de treino (informativo)",
+   "fix": "Decidir conscientemente: bloquear treino (GPTBot, ClaudeBot, Google-Extended, CCBot) protege conteúdo mas pode reduzir presença da marca nos modelos."
+  },
+  {
+   "id": "geo.answer_first",
+   "dim": "GEO",
+   "pillar": "Conteúdo citável",
+   "type": "manual",
+   "weight": 4,
+   "evidence": "C",
+   "name": "Resposta ou definição direta no início da página",
+   "fix": "Abrir cada página com 1-2 frases que respondem a pergunta principal (o que é, para quem, resultado), antes de qualquer contexto."
+  },
+  {
+   "id": "geo.passages",
+   "dim": "GEO",
+   "pillar": "Conteúdo citável",
+   "type": "manual",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Seções autocontidas (~120-180 palavras) que respondem uma subpergunta cada",
+   "fix": "Quebrar textos longos em seções com H2/H3 descritivos, cada uma compreensível isoladamente. Obs.: o guia do Google (mai/2026) diz que não é preciso escrever em 'chunks'; o ganho observado em estudos e correlacional, então trate como boa prática de clareza, não como truque."
+  },
+  {
+   "id": "geo.evidence_density",
+   "dim": "GEO",
+   "pillar": "Conteúdo citável",
+   "type": "manual",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Dados, estatísticas com fonte, citações de especialistas",
+   "fix": "Incluir números concretos com fonte, citações nomeadas e links para fontes externas confiáveis."
+  },
+  {
+   "id": "geo.entity_specificity",
+   "dim": "GEO",
+   "pillar": "Conteúdo citável",
+   "type": "manual",
+   "weight": 2,
+   "evidence": "C",
+   "name": "Especificidade de entidades (marca, produtos, pessoas, lugares nomeados)",
+   "fix": "Trocar linguagem genérica (\"solução inovadora\") por nomes, categorias, integrações, números e casos reais."
+  },
+  {
+   "id": "geo.information_gain",
+   "dim": "GEO",
+   "pillar": "Conteúdo citável",
+   "type": "manual",
+   "weight": 3,
+   "evidence": "A",
+   "name": "Ganho de informação: dados próprios, opinião ou método original",
+   "fix": "Publicar pesquisas próprias, benchmarks, metodologias e opiniões que não existam no top 10."
+  },
+  {
+   "id": "geo.freshness",
+   "dim": "GEO",
+   "pillar": "Conteúdo citável",
+   "type": "auto",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Atualização visível e recente (datas, dateModified, lastmod)",
+   "fix": "Exibir data de atualização, manter dateModified no schema e revisar conteúdos comerciais a cada 90 dias."
+  },
+  {
+   "id": "geo.authorship",
+   "dim": "GEO",
+   "pillar": "Autoridade e entidade",
+   "type": "auto",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Autores nomeados com credenciais (E-E-A-T)",
+   "fix": "Assinar artigos com autor real, bio, credenciais e página de autor; usar Person no schema."
+  },
+  {
+   "id": "geo.org_entity",
+   "dim": "GEO",
+   "pillar": "Autoridade e entidade",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "A",
+   "name": "Entidade da marca declarada (Organization + sameAs + página Sobre com fatos)",
+   "fix": "Organization com logo, url, sameAs (LinkedIn, Instagram, YouTube, Crunchbase, Wikidata) e página Sobre com fatos verificáveis."
+  },
+  {
+   "id": "geo.comparison_assets",
+   "dim": "GEO",
+   "pillar": "Conteúdo citável",
+   "type": "manual",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Páginas de comparação, alternativas e listas (\"melhores X\", \"X vs Y\")",
+   "fix": "Criar e atualizar páginas comparativas honestas para as consultas comerciais do ICP."
+  },
+  {
+   "id": "geo.offsite_presence",
+   "dim": "GEO",
+   "pillar": "Autoridade e entidade",
+   "type": "data",
+   "weight": 4,
+   "evidence": "C",
+   "name": "Menções de terceiros: imprensa, Reddit/foruns, YouTube, plataformas de review (G2, Capterra, Reclame Aqui)",
+   "fix": "Plano de digital PR, presença em listas de terceiros, reviews e participação em comunidades."
+  },
+  {
+   "id": "geo.llms_txt",
+   "dim": "GEO",
+   "pillar": "Acesso de IA",
+   "type": "auto",
+   "weight": 0,
+   "evidence": "M",
+   "name": "llms.txt (informativo, não pontua)",
+   "fix": "Opcional. Não ha evidência de que aumente citações; não priorizar."
+  },
+  {
+   "id": "aeo.direct_answers",
+   "dim": "AEO",
+   "pillar": "Respostas extraíveis",
+   "type": "auto",
+   "weight": 4,
+   "evidence": "C",
+   "name": "Headings em forma de pergunta seguidos de resposta curta (40-60 palavras)",
+   "fix": "Logo após cada H2/H3 de pergunta, um parágrafo de 40-60 palavras que responde sozinho."
+  },
+  {
+   "id": "aeo.question_coverage",
+   "dim": "AEO",
+   "pillar": "Respostas extraíveis",
+   "type": "manual",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Cobertura das perguntas reais do público (People Also Ask, fan-out)",
+   "fix": "Mapear perguntas reais (PAA, vendas, suporte) e responder cada uma em seção própria."
+  },
+  {
+   "id": "aeo.structured_formats",
+   "dim": "AEO",
+   "pillar": "Respostas extraíveis",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Listas e tabelas onde o conteúdo pede (passos, comparações)",
+   "fix": "Usar listas numeradas para processos e tabelas para comparações e precos."
+  },
+  {
+   "id": "aeo.faq_content",
+   "dim": "AEO",
+   "pillar": "Respostas extraíveis",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "A",
+   "name": "Blocos de perguntas frequentes visíveis (conteúdo, não so schema)",
+   "fix": "Incluir FAQ visível nas páginas comerciais com objeções reais de vendas. O rich result de FAQ foi encerrado para todos os sites em mai/2026: o valor agora está no conteúdo, não no schema."
+  },
+  {
+   "id": "aeo.snippet_controls",
+   "dim": "AEO",
+   "pillar": "Elegibilidade",
+   "type": "auto",
+   "weight": 3,
+   "evidence": "S",
+   "name": "Sem bloqueio de snippet (nosnippet, max-snippet restritivo, data-nosnippet no conteúdo principal)",
+   "fix": "Remover nosnippet/max-snippet:0 para permitir uso em snippets e AI Overviews."
+  },
+  {
+   "id": "aeo.rich_result_schema",
+   "dim": "AEO",
+   "pillar": "Elegibilidade",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Schema para rich results ainda suportados (Breadcrumb, Article, Product, Review, Organization)",
+   "fix": "Priorizar tipos com rich result ativo (Breadcrumb, Article, Product, Software app, Review, Organization, Vídeo, Event). HowTo (2023) e FAQ (mai/2026) não geram mais rich results."
+  },
+  {
+   "id": "aeo.visible_content",
+   "dim": "AEO",
+   "pillar": "Elegibilidade",
+   "type": "manual",
+   "weight": 2,
+   "evidence": "S",
+   "name": "Respostas-chave em HTML visível (não em abas, PDFs ou imagens)",
+   "fix": "Tirar respostas importantes de abas/accordions fechados, PDFs e imagens com texto."
+  },
+  {
+   "id": "aeo.pricing_visible",
+   "dim": "AEO",
+   "pillar": "Elegibilidade",
+   "type": "auto",
+   "weight": 2,
+   "evidence": "C",
+   "name": "Preço ou modelo de preço em texto no HTML",
+   "fix": "Publicar preços, faixas ou 'a partir de' em texto no HTML. Sem isso, a IA responde 'quanto custa' com dados de terceiros ou de concorrentes."
+  },
+  {
+   "id": "aeo.local_nap",
+   "dim": "AEO",
+   "pillar": "Elegibilidade",
+   "type": "manual",
+   "weight": 1,
+   "evidence": "A",
+   "name": "Dados locais consistentes (nome, endereco, telefone) quando aplicável",
+   "fix": "Padronizar NAP no site, Google Business Profile e diretórios; LocalBusiness no schema."
+  },
+  {
+   "id": "vis.rankings",
+   "dim": "VIS",
+   "pillar": "Busca tradicional",
+   "type": "data",
+   "weight": 4,
+   "evidence": "C",
+   "name": "Rankings em consultas do ICP (Google e Bing)",
+   "fix": "Priorizar consultas de alto valor sem presença no top 10."
+  },
+  {
+   "id": "vis.ai_overviews",
+   "dim": "VIS",
+   "pillar": "Busca com IA",
+   "type": "data",
+   "weight": 4,
+   "evidence": "C",
+   "name": "Presença/citação em AI Overviews nas consultas monitoradas",
+   "fix": "Para consultas com AI Overview sem citação da marca, reforcar resposta direta, dados e cobertura das subperguntas."
+  },
+  {
+   "id": "vis.ai_answers",
+   "dim": "VIS",
+   "pillar": "Busca com IA",
+   "type": "data",
+   "weight": 5,
+   "evidence": "S",
+   "name": "Menção/citação da marca em respostas de IA (teste de prompts)",
+   "fix": "Atacar as consultas em que concorrentes são citados e a marca não (conteúdo + menções de terceiros)."
+  },
+  {
+   "id": "vis.competitors",
+   "dim": "VIS",
+   "pillar": "Concorrência",
+   "type": "data",
+   "weight": 3,
+   "evidence": "C",
+   "name": "Share of voice frente aos concorrentes",
+   "fix": "Estudar as fontes citadas nas respostas que favorecem concorrentes e conquistar presença nelas."
+  }
+ ]
+}
