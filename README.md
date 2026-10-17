@@ -53,6 +53,8 @@ coleta, analisa, pontua e entrega o resumo no chat e os arquivos.
 carratu-seo-geo-aeo/
 ├── SKILL.md                    fluxo da auditoria (o Claude lê primeiro)
 ├── README.md
+├── LICENSE.md                  PolyForm Noncommercial 1.0.0
+├── NOTICE.md                   avisos de licença, marca e fontes
 ├── assets/
 │   ├── brand.json              identidade do relatório completo (Carratu Digital)
 │   ├── brand-consultoria.json  identidade do diagnóstico de 1 página (consultoria, tema escuro)
@@ -84,6 +86,13 @@ Requisitos: Python 3.10+, `beautifulsoup4`, `python-docx`; `matplotlib` (gráfic
 GEO muda rápido. Revise `references/evidence-2026.md` a cada 6 meses (a própria skill avisa e confirma por busca
 os itens marcados com ⚠ quando a base está velha). Ao mudar pesos ou checks, edite `references/rubric.json`; os
 checks automáticos novos precisam de uma função correspondente em `scripts/analyze.py`.
+
+## Licença
+
+Código, metodologia e textos sob a **PolyForm Noncommercial License 1.0.0** (`LICENSE.md`): uso livre para fins
+não comerciais; uso comercial (por exemplo, vender auditorias feitas com a skill) exige licença comercial,
+solicitada em [consultoria.carratu.com.br](https://consultoria.carratu.com.br). As marcas e logos Carratu não estão
+incluídas na licença. Detalhes, marcas e componentes de terceiros em `NOTICE.md`.
 
 ## Histórico
 

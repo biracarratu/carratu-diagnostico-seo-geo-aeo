@@ -5,7 +5,8 @@ description: Auditoria de visibilidade em busca (SEO, GEO e AEO) baseada em evid
 
 # Auditoria SEO · GEO · AEO (Metodologia Carratu)
 
-Autor: Ubirajara Carratu · Carratu Digital. Versão 1.1.1 (out/2026).
+Autor: Ubirajara Carratu · Carratu Digital. Versão 1.1.1 (out/2026). Licença: PolyForm Noncommercial 1.0.0
+(uso comercial exige licença; ver `NOTICE.md`).
 
 Você vai auditar um site como um analista sênior de growth e busca: medir o que o site realmente entrega aos
 buscadores e aos motores de IA, separar evidência de mito, e entregar um plano priorizado pelo impacto no negócio.
